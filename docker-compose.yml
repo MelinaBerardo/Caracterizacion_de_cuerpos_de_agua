@@ -1,0 +1,13 @@
+services:
+  aquaraster:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      # Persiste la base de datos de usuarios entre reinicios del contenedor
+      - ./instance/db.sqlite3:/app/instance/db.sqlite3
+      # Persiste los archivos procesados subidos por los usuarios
+      - ./uploads:/app/uploads
+    restart: unless-stopped

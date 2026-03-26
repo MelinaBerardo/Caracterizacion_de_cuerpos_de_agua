@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Exportar Resultados{% endblock %}
+
+{% block content %}
+<main class="in">
+    <h1>📥 Exportar Reporte de Análisis</h1>
+    <p style="text-align: center; color: #666; margin-bottom: 30px;">
+        Descarga los datos del último procesamiento realizado.
+    </p>
+
+    {% if session.get('resultados_filename') %}
+        <div class="config-panel" style="max-width: 600px; margin: auto; text-align: center;">
+            <h3>Opciones de Descarga</h3>
+            <p style="color: #666; margin-top: 15px;">
+                El reporte contiene el análisis de las <strong>{{ session.get('resultados_num_regiones', 'N/A') }}</strong> regiones detectadas.
+            </p>
+            
+            <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
+                <a href="{{ url_for('download_report', format='csv') }}" class="btn-procesar" style="background-color: #43a047;">
+                    Descargar CSV
+                </a>
+
+                <a href="{{ url_for('download_report', format='pdf') }}" class="btn-procesar" style="background-color: #a04943;">
+                    Descargar PDF
+                </a>
+            </div>
+        </div>
+
+    {% else %}
+
+        <div class="warning-box" style="max-width: 600px; margin: auto;">
+            <strong>Sin datos:</strong> No hay resultados de procesamiento disponibles para exportar. 
+            Por favor, completa un análisis primero.
+        </div>
+    {% endif %}
+
+</main>
+{% endblock %}

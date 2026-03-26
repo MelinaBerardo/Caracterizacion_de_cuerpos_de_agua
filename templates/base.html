@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaRaster — {% block title %}{% endblock %}</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Favicon define el icono de la pestaña del navegador-->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💧</text></svg>">
+    
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    <!-- pestaña de navegación -->
+    <nav>
+        <ul>
+            <!--  INICIO (Visible para todos) -->
+            <li>
+                <a href="{{ url_for('index') }}" 
+                   class="{% if request.path == '/' %}active{% endif %}">
+                    🏠 Inicio
+                </a>
+            </li>
+
+            {% if current_user.is_authenticated %}
+                <!-- MENÚ solo si esta logueado -->
+                <li>
+                    <a href="{{ url_for('upload') }}" 
+                       class="{% if '/upload' in request.path %}active{% endif %}">
+                        📡 Carga de Bandas
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('process') }}" 
+                       class="{% if '/process' in request.path %}active{% endif %}">
+                        🔬 Procesamiento
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('results') }}" 
+                       class="{% if '/results' in request.path %}active{% endif %}">
+                        📊 Resultados
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('export') }}" 
+                       class="{% if '/export' in request.path %}active{% endif %}">
+                        📥 Exportar
+                    </a>
+                </li>
+
+                <!-- Separador visual o espacio -->
+                
+                <!-- INFO DE USUARIO Y SALIR -->
+                <!-- margin-left: auto para empujarlo a la derecha -->
+                <li style="margin-left: auto; align-self: center; color: #004d40; margin-right: 15px;">
+                    Hola, <strong>{{ current_user.username }}</strong>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('logout') }}" 
+                       style="color: #c62828; border: 1px solid #c62828; padding: 5px 10px; border-radius: 5px;">
+                        Cerrar Sesión
+                    </a>
+                </li>
+
+            {% else %}
+                <!--  MENÚ LOGIN -->
+                
+                <!-- margin-left: auto empuja estos botones a la derecha -->
+                <li style="margin-left: auto;">
+                    <a href="{{ url_for('login') }}" 
+                       class="{% if '/login' in request.path %}active{% endif %}">
+                        🔐 Ingresar
+                    </a>
+                </li>
+
+
+            {% endif %}
+
+        </ul>
+    </nav>
+
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">
+                {% if category == 'success' %}
+                    ✓
+                {% elif category == 'error' %}
+                    ✕
+                {% elif category == 'warning' %}
+                    ⚠
+                {% else %}
+                    ℹ
+                {% endif %}
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Contenido Principal -->
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer style="text-align: center; padding: 30px; color: #666; font-size: 0.9em;">
+        <p><strong>AquaRaster</strong> — Sistema de Análisis Satelital de Cuerpos de Agua</p>
+        <p style="margin-top: 10px;">Desarrollado con Python, Flask y Rasterio | 
+            <a href="https://github.com/MelinaBerardo/Caracterizacion_de_cuerpos_de_agua" style="color: #26a69a; text-decoration: none;">Código Fuente</a></p>
+    </footer>
+
+    <!-- Scripts globales -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelectorAll('.flash');
+            flashMessages.forEach(msg => {
+                // Esperar 5 segundos
+                setTimeout(() => {
+                    // Añadir clase definida en style.css (.fade-out)
+                    msg.classList.add('fade-out'); 
+                    // Eliminar del DOM después de la animación
+                    setTimeout(() => msg.remove(), 500);
+                }, 5000);
+            });
+        });
+    </script>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

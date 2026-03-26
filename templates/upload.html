@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Carga de Bandas{% endblock %}
+
+{% block extra_head %}
+<script src="{{ url_for('static', filename='js/upload.js') }}" defer></script>
+{% endblock %}
+
+{% block content %}
+<main class="in">
+    <h1>Carga de Bandas Espectrales</h1>
+    
+    {% if hay_bandas_cargadas %}
+        <div style="text-align: center; background-color: #e8f5e9; border: 1px solid #4CAF50; padding: 25px; border-radius: 8px; margin-bottom: 30px;">
+            <p style="font-size: 1.1em; color: #2e7d32; margin-top: 0;">
+                 Ya hay 5 bandas cargadas en esta sesión
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <a href="{{ url_for('process') }}" class="btn-procesar" style="font-size: 1.1em; padding: 12px 25px;">
+                    Ir a Procesamiento
+                </a>
+                <a href="{{ url_for('crop_interface', force=1) }}" class="btn-procesar" style="font-size: 1.1em; padding: 12px 25px; background-color: #546e7a; box-shadow: none;">
+                    Recortar (opcional)
+                </a>
+            </div>
+        </div>
+
+    {% else %}
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            Selecciona las 5 bandas para el análisis de cuerpos de agua
+        </p>
+
+        <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data" class="form-carga">
+
+            <div class="banda-card azul">
+                <h3><span class="dot azul"></span> Banda Azul (Blue)</h3>
+                <p style="font-size: 0.9em; color: #666; margin: 10px 0;">
+                    Longitud de onda: ~490 nm 
+                </p>
+                <p style="font-size: 0.7em; color: #666; margin: 10px 0;">
+                    Sentinel:B2 Landsat:B2
+                </p>
+                <label for="band_blue" class="drop-area">
+                    <div class="icono-subida">⬆️</div>
+                    <p>Arrastra el archivo aquí o haz clic<br><small>Formatos: .tif, .tiff, .jp2</small></p>
+                </label>
+                <input type="file" id="band_blue" name="band_blue" accept=".tif,.tiff,.jp2" hidden>
+            </div>
+
+            <div class="banda-card verde">
+                <h3><span class="dot verde"></span> Banda Verde (Green)</h3>
+                <p style="font-size: 0.9em; color: #666; margin: 10px 0;">
+                    Longitud de onda: ~560 nm
+                </p>
+                <p style="font-size: 0.7em; color: #666; margin: 10px 0;">
+                    Sentinel:B3 Landsat:B3
+                </p>
+                <label for="band_green" class="drop-area">
+                    <div class="icono-subida">⬆️</div>
+                    <p>Arrastra el archivo aquí o haz clic<br><small>Formatos: .tif, .tiff, .jp2</small></p>
+                </label>
+                <input type="file" id="band_green" name="band_green" accept=".tif,.tiff,.jp2" hidden>
+            </div>
+
+            <div class="banda-card roja">
+                <h3><span class="dot red"></span> Banda Roja (Red)</h3>
+                <p style="font-size: 0.9em; color: #666; margin: 10px 0;">
+                    Longitud de onda: ~665 nm 
+                </p>
+                <p style="font-size: 0.7em; color: #666; margin: 10px 0;">
+                    Sentinel:B4 Landsat:B4
+                </p>
+                <label for="band_red" class="drop-area">
+                    <div class="icono-subida">⬆️</div>
+                    <p>Arrastra el archivo aquí o haz clic<br><small>Formatos: .tif, .tiff, .jp2</small></p>
+                </label>
+                <input type="file" id="band_red" name="band_red" accept=".tif,.tiff,.jp2" hidden>
+            </div>
+
+            <div class="banda-card nir">
+                <h3><span class="dot nir"></span> Banda NIR (Infrarrojo Cercano)</h3>
+                <p style="font-size: 0.9em; color: #666; margin: 10px 0;">
+                    Longitud de onda: ~842 nm 
+                </p>
+                <p style="font-size: 0.7em; color: #666; margin: 10px 0;">
+                    Sentinel:B8 Landsat:B5
+                </p>
+                <label for="band_nir" class="drop-area">
+                    <div class="icono-subida">⬆️</div>
+                    <p>Arrastra el archivo aquí o haz clic<br><small>Formatos: .tif, .tiff, .jp2</small></p>
+                </label>
+                <input type="file" id="band_nir" name="band_nir" accept=".tif,.tiff,.jp2" hidden>
+            </div>
+
+            <div class="banda-card swir">
+                <h3><span class="dot swir"></span> Banda SWIR (Infrarrojo de Onda Corta)</h3>
+                <p style="font-size: 0.9em; color: #666; margin: 10px 0;">
+                    Longitud de onda: ~1610 nm 
+                </p>
+                <p style="font-size: 0.7em; color: #666; margin: 10px 0;">
+                    Sentinel:B11 Landsat:B6
+                </p>
+                <label for="band_swir" class="drop-area">
+                    <div class="icono-subida">⬆️</div>
+                    <p>Arrastra el archivo aquí o haz clic<br><small>Formatos: .tif, .tiff, .jp2</small></p>
+                </label>
+                <input type="file" id="band_swir" name="band_swir" accept=".tif,.tiff,.jp2" hidden>
+            </div>
+
+
+            <div class="banda-card submit-area" style="display: flex; align-items: center; justify-content: center; border: none; box-shadow: none; background: transparent;">
+                <button type="submit" id="submit-bands-btn" class="btn-procesar" disabled style="width: 100%; height: 100%; max-height: 60px;">
+                    Cargar
+                </button>
+            </div>
+        </form>
+    {% endif %}
+    
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="{{ url_for('clear_bands') }}" class="btn-procesar" 
+           style="background-color: #d32f2f; box-shadow: none; font-size: 0.9em; padding: 10px 15px;">
+            Limpiar Carga Actual
+        </a>
+    </div>
+</main>
+{% endblock %}

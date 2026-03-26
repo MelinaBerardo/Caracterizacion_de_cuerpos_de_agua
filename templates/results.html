@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Resultados{% endblock %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block content %}
+<main class="in">
+
+    {% if resultados %} 
+        {% set metodo_clave = resultados.metodo|default('mndwi') %}
+        
+        <h1>📊 Resultados del analisis</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 20px;">
+            Método de Detección Usado: <strong>{{ resultados.metodo | upper }}</strong>
+        </p>
+
+        <div class="main-mask-container">
+            <h2>🗺️ Visualización Global ({{ resultados[metodo_clave].num_regiones }} Regiones)</h2>
+            
+            <div class="mask-comparison-grid">
+                <div>
+                    <h3>Regiones Etiquetadas por ID</h3>
+                    {% if resultados[metodo_clave].imagen_con_ids %}
+                    <img src="data:image/png;base64,{{ resultados[metodo_clave].imagen_con_ids }}" 
+                         alt="IDs" />
+                    {% else %}
+                    <p>No disponible.</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <h3>Máscara Superpuesta</h3>
+                    {% if resultados[metodo_clave].imagen_mask_completa %}
+                    <img src="data:image/png;base64,{{ resultados[metodo_clave].imagen_mask_completa }}" 
+                         alt="Máscara completa">
+                    {% else %}
+                    <p>No disponible</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+
+        <h2 style="margin-top: 40px; text-align: center;">🔬 Análisis Detallado por Región (Total: {{ resultados[metodo_clave].num_regiones }})</h2>
+
+        {% for region in resultados[metodo_clave].analisis %}
+        <div class="region-card">
+            <div class="region-header">
+                Región de Agua #{{ region.id }}
+            </div>
+            
+            <div class="region-content">
+                <div class="region-image">
+                    <h4 style="text-align: center; margin-bottom: 5px;">Contexto Global</h4>
+                    {% if region.imagen_contexto_base64 %}
+                    <img src="data:image/png;base64,{{ region.imagen_contexto_base64 }}" 
+                         alt="Contexto" style="margin-bottom:10px;">
+                    {% else %}
+                    <p>No se pudo generar la imagen de contexto.</p>
+                    {% endif %}
+
+                    <h4 style="text-align: center; margin-bottom: 5px;">Zoom de Región</h4>
+                    {% if region.imagen_base64 %}
+                    <img src="data:image/png;base64,{{ region.imagen_base64 }}" 
+                         alt="Zoom">
+                    {% else %}
+                    <p>No se pudo generar la imagen para esta región.</p>
+                    {% endif %}
+                </div>
+
+                <div class="region-report">
+                    <h3>📝 Reporte de Métricas</h3>
+                    <table class="report-table">
+                        <tr><th>Área</th><td>{{ '%.3f' % region.area_km2 }} km²</td></tr>
+                        <tr><th>Perímetro</th><td>{{ '%.2f' % region.perimetro_km }} km</td></tr>
+                        <tr><th>Circularidad</th><td>{{ '%.3f' % region.circularidad }}</td></tr>
+                        <tr><th>Tipo Morfológico</th><td>{{ region.morfologia.clasificacion }}</td></tr>             
+                        <tr><th>Índice NDTI Medio</th><td>{{ '%.4f' % region.ndti_mean if region.ndti_mean is not none else 'N/A' }}</td></tr>
+                        <tr><th>Turbidez (SD estimada)</th><td>{{ '%.2f' % region.sd_estimada }} m</td></tr>
+                        <tr><th>Clasificación Turbidez</th><td><strong>{{ region.clasificacion_turbidez }}</strong></td></tr>
+                        <tr><th>Profundidad Media</th><td>{{ '%.2f' % region.profundidad_mean }} m</td></tr>
+                        <tr><th>Ubicación</th><td>{{ '%.6f' % region.lat }}, {{ '%.6f' % region.lon }}</td></tr>
+                        <tr><th>Ver en Mapa</th><td><a href="{{ region.google_maps }}" target="_blank">Google Maps</a></td></tr>
+                    </table>
+
+                    <h3 style="margin-top: 20px;">Espectrales (Reflectancia Media)</h3>
+                    <table class="report-table">
+                        <tr><th>Azul</th><td>{{ '%.4f' % region.reflectancias.azul }}</td></tr>
+                        <tr><th>Verde</th><td>{{ '%.4f' % region.reflectancias.verde }}</td></tr>
+                        <tr><th>Rojo</th><td>{{ '%.4f' % region.reflectancias.rojo }}</td></tr>
+                        <tr><th>NIR</th><td>{{ '%.4f' % region.reflectancias.nir }}</td></tr>
+                        <tr><th>SWIR</th><td>{{ '%.4f' % region.reflectancias.swir }}</td></tr>
+                    </table>
+
+                    <div style="flex: 1; min-width: 250px; text-align: center;">
+                        {% if region.grafico_espectral %}
+                            <img src="data:image/png;base64,{{ region.grafico_espectral }}" 
+                                 alt="Firma Espectral" 
+                                 style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px; padding: 5px;">
+                        {% else %}
+                            <p style="color: #999;">Gráfico no disponible</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% if resultados.metadata %}
+            <div class="config-panel" style="margin-top: 40px; text-align: left;">
+                <div class="config-section">
+                    <h3>🛰️ Metadatos del Archivo Cargado</h3>
+                    <pre style="background: #f5f5f5; padding: 15px; border-radius: 8px; 
+                                white-space: pre-wrap; word-wrap: break-word; 
+                                font-size: 0.85em; max-height: 400px; overflow-y: auto;">
+        {{ resultados.metadata | tojson(indent=4) }}
+                    </pre>
+                </div>
+            </div>
+        {% endif %}
+        
+    {% else %}
+        <h1>⚠️ No hay resultados</h1>
+        <div class="alert alert-danger" role="alert">
+            ❌ Error al cargar los resultados. Parece que el archivo de datos no se pudo encontrar o leer correctamente. 
+            <br>
+        </div>
+    {% endif %}
+
+</main>
+{% endblock %}

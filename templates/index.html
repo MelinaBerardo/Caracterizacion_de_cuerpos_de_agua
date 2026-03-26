@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %} Pagina de inicio {% endblock %}
+
+{% block content %}
+<div class="in">
+     <h1>AquaRaster</h1>
+     <p>Sistema de análisis de cuerpos de agua mediante imágenes satelitales</p>
+     
+     <!-- Boton para saltar directamente al analisis -->
+     <div style="margin: 40px 0;"> 
+        <a href="{{ url_for('upload') }}" class="btn-procesar" style="display: inline-block; text-decoration: none;">
+             Comenzar Análisis
+        </a>
+     </div>
+</div>
+
+<!-- tarjetas explicativas de lo que hace el programa -->
+<div class="features-grid">
+    <div class="feature-card">
+        <div class="icon">📡</div>
+        <h3>Procesamiento Satelital</h3>
+        <p>
+            Analiza imágenes satelitales ópticas especialmente Sentinel y Landsat. 
+            Soporta bandas espectrales en formatos GeoTIFF y JP2. 
+        </p>
+    </div>
+
+    <div class="feature-card">
+        <div class="icon">💧</div>
+        <h3>Detección Automática</h3>
+        <p>
+            Identifica automáticamente cuerpos de agua usando índices espectrales.
+        </p>
+    </div>
+
+    <div class="feature-card">
+        <div class="icon">📊</div>
+        <h3>Análisis Detallado</h3>
+        <p>
+            Calcula métricas morfológicas, turbidez y profundidad media.
+        </p>
+    </div>
+
+    <div class="feature-card">
+        <div class="icon">🌍</div>
+        <h3>Georreferenciación</h3>
+        <p>
+            Obtiene coordenadas precisas (WGS84) de cada cuerpo de agua con 
+            integración directa a Google Maps.
+        </p>
+    </div>
+
+    <div class="feature-card">
+        <div class="icon">📥</div>
+        <h3>Exportación Múltiple</h3>
+        <p>
+            Exporta resultados en CSV, JSON y PDF.
+        </p>
+    </div>
+</div>    
+
+
+<!--FLUJO DE TRABAJO-->
+
+<section class="workflow">
+    <h2>🔄 Flujo de Trabajo</h2>
+
+    <div class="workflow-grid">
+        <div class="step">
+            <div class="circle">1</div>
+            <h4>Carga de Bandas</h4>
+            <p>Sube las 5 bandas espectrales (Azul, Verde, Roja, NIR, SWIR)</p>
+        </div>
+
+        <div class="step">
+            <div class="circle">2</div>
+            <h4>Procesamiento</h4>
+            <p>Cálculo de índices y detección automática de regiones de agua</p>
+        </div>
+
+        <div class="step">
+            <div class="circle">3</div>
+            <h4>Análisis</h4>
+            <p>Caracterización morfológica, turbidez y profundidad</p>
+        </div>
+
+        <div class="step">
+            <div class="circle">4</div>
+            <h4>Resultados</h4>
+            <p>Visualiza métricas, mapas y clasificaciones de cada región</p>
+        </div>
+
+        <div class="step">
+            <div class="circle">5</div>
+            <h4>Exportación</h4>
+            <p>Descarga datos en formatos CSV, PDF</p>
+        </div>
+    </div>
+</section>
+
+<!-- Información técnica -->
+<div style="margin-top: 40px; background: #e3f2fd; border-left: 4px solid #2196f3; padding: 20px; border-radius: 8px;">
+    <h3 style="margin-top: 0; color: #1976d2;">📚 Índices Espectrales Utilizados</h3>
+    <ul style="line-height: 1.8; color: #555;">
+        <li><strong>MNDWI</strong> (Modified Normalized Difference Water Index): Detección de agua con mayor precisión</li>
+        <li><strong>USI</strong> (Urban Shadow Index): Eliminación de sombras urbanas que pueden confundirse con agua</li>
+        <li><strong>NDTI</strong> (Normalized Difference Turbidity Index): Estimación de turbidez y calidad del agua</li>
+    </ul>
+</div>
+
+     <p>Fecha: {{ date | today }}</p>
+{% endblock %}

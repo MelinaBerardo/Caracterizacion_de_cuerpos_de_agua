@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Recorte de Bandas{% endblock %}
+
+{% block extra_head %}
+<script src="{{ url_for('static', filename='js/crop.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<main class="in">
+    {% if recorte_obligatorio %}
+        <h1>✂️ Recorte Obligatorio</h1>
+        <p style="text-align: center; color: #d32f2f; font-weight: bold; margin-bottom: 20px;">
+            La imagen original ({{ original_width }}x{{ original_height }} px) excede el límite de {{ max_dim }}x{{ max_dim }} píxeles.
+        </p>
+    {% else %}
+        <h1>✂️ Recorte (Opcional)</h1>
+        <p style="text-align: center; color: #2e7d32; font-weight: bold; margin-bottom: 20px;">
+            Puedes recortar si deseas procesar solo un área.
+        </p>
+    {% endif %}
+    <p style="text-align: center; color: #666; margin-bottom: 20px;">
+        Haz clic y arrastra sobre la imagen para seleccionar el área que deseas procesar.
+    </p>
+
+    <div style="text-align: center;">
+        <div id="preview-container-crop">
+            <img id="preview-image" src="{{ preview_url }}" alt="Vista previa de la banda de referencia">
+            <div id="selection-box"></div>
+        </div>
+    </div>
+    
+    <div style="text-align: center;">
+        <button id="crop-button" class="btn-action" disabled>
+            Aplicar Recorte y Continuar (0x0 píxeles)
+        </button>
+    </div>
+
+    <div id="loading-message" style="display: none; margin-top: 20px; color: #26a69a; font-weight: bold; text-align: center;">
+        Aplicando recorte, por favor espera...
+    </div>
+
+</main>
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script>
+    const scaleFactor = {{ scale_factor }}; 
+    const originalWidth = {{ original_width }};
+    const maxDim = {{ max_dim }};
+    const cropUrl = '{{ url_for("crop_interface") }}';
+</script>
+
+{% endblock %}
+

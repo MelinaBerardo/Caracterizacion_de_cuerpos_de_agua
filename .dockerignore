@@ -1,0 +1,27 @@
+# Ignorar carpetas de entorno virtual local
+venv/
+env/
+.env
+
+# Ignorar archivos compilados de Python (basura)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignorar base de datos local (se usará un volumen)
+db.sqlite3
+
+# Ignorar historial de git
+.git/
+.gitignore
+.env
+
+# Ignorar la carpeta de uploads local para no inflar la imagen
+# (Se conectará después mediante un volumen)
+uploads/*
+!uploads/.gitkeep
+
+# Ignorar archivos de sistema
+.DS_Store
+Thumbs.db

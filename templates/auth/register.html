@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Registro de Usuario{% endblock %}
+
+{% block content %}
+<main class="in" style="max-width: 500px; margin: 0 auto;">
+    <h1>📝 Registro de Usuario</h1>
+
+    <form method="POST" action="">
+        <!-- Esta línea es CRÍTICA: genera el token de seguridad CSRF -->
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            {{ form.username.label(class="form-label") }}
+            <!-- Si hay errores, añadir clase 'is-invalid' -->
+            {% if form.username.errors %}
+                {{ form.username(class="form-control is-invalid", placeholder="Elige un usuario") }}
+                <div class="invalid-feedback">
+                    {% for error in form.username.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.username(class="form-control", placeholder="Elige un usuario") }}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.password.label(class="form-label") }}
+            {% if form.password.errors %}
+                {{ form.password(class="form-control is-invalid", placeholder="Contraseña segura") }}
+                <div class="invalid-feedback">
+                    {% for error in form.password.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.password(class="form-control", placeholder="Contraseña segura") }}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.confirm_password.label(class="form-label") }}
+            {% if form.confirm_password.errors %}
+                {{ form.confirm_password(class="form-control is-invalid", placeholder="Repite la contraseña") }}
+                <div class="invalid-feedback">
+                    {% for error in form.confirm_password.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.confirm_password(class="form-control", placeholder="Repite la contraseña") }}
+            {% endif %}
+        </div>
+
+        <div class="boton-container" style="margin-top: 20px;">
+            {{ form.submit(class="btn-procesar", style="width: 100%;") }}
+        </div>
+    </form>
+
+    <p style="margin-top: 20px; text-align: center;">
+        ¿Ya tienes cuenta? <a href="{{ url_for('login') }}">Inicia sesión aquí</a>
+    </p>
+</main>
+{% endblock %}
