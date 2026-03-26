@@ -29,8 +29,8 @@ Aplicación web para la detección y caracterización de cuerpos de agua a parti
 1. Clonar el repositorio:
 
 ```bash
-git clone https://github.com/MelinaBerardo/aquaraster.git
-cd aquaraster
+git clone https://github.com/MelinaBerardo/Caracterizacion_de_cuerpos_de_agua.git
+cd Caracterizacion_de_cuerpos_de_agua
 ```
 
 2. Crear el archivo de variables de entorno:
