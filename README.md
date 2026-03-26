@@ -1,10 +1,15 @@
 # AquaRaster
 
 **Trabajo de Prácticas Profesionales - Ingeniería en Telecomunicaciones** 
+
 **Autora:** Melina Aylén Berardo  
+
 **Tutores:** Primo, Damián Héctor y Tosco, Sebastián
+
 **Institución:** Universidad Nacional de Río Cuarto (UNRC) - Facultad de Ingeniería  
+
 **Lugar de desarrollo:** GIDAT - Grupo de Investigación y Desarrollo Aplicado a las Telecomunicaciones
+
 **Año:** 2026  
 
 ---
