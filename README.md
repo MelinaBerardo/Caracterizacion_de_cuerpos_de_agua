@@ -84,61 +84,111 @@ docker-compose down
 
 AQUARASTER_APP
 │
+
 ├── aquaraster.py              # Aplicación Flask principal: rutas y configuración
+
 ├── bdate.py                   # Modelos de base de datos (SQLAlchemy) y tabla de usuarios
+
 ├── forms.py                   # Formularios de login y registro (Flask-WTF)
+
 ├── requirements.txt           # Dependencias Python del proyecto
+
 │
+
 ├── README.md                  # Documentación y guía de despliegue
+
 ├── Dockerfile                 # Imagen Docker de la aplicación
+
 ├── docker-compose.yml         # Orquestación: puertos, volúmenes y variables de entorno
+
 ├── .dockerignore              # Archivos excluidos al construir la imagen Docker
+
 ├── .env.example               # Plantilla de variables de entorno 
+
 ├── .gitignore                 # Archivos excluidos del repositorio Git
+
 ├── LICENSE                    # Licencia MIT
+
 │
+
 ├── core                       # Módulos de procesamiento satelital
+
 │   ├── __init__.py            # Marca core/ como paquete Python
+
 │   ├── carga.py               # Conversión de formatos raster (GDAL)
+
 │   ├── caracterizacion.py     # Profundidad, turbidez y morfología de regiones
+
 │   ├── georeferenciacion.py   # Transformación de coordenadas
+
 │   ├── indices.py             # Índices espectrales: MNDWI, USI, filtro de techos
+
 │   ├── limpieza.py            # Limpieza morfológica y detección de regiones
+
 │   ├── procesamiento.py       # Pipeline principal de procesamiento
+
 │   ├── recorte.py             # Recorte espacial de bandas raster
+
 │   └── utils.py               # Utilidades: normalización e imágenes base64
+
 │
+
 ├── templates                  # Plantillas HTML (Jinja2)
+
 │   ├── base.html              # Layout base: navegación, flash messages, footer
+
 │   ├── crop.html              # Interfaz de recorte interactivo
+
 │   ├── export.html            # Descarga de resultados en CSV y PDF
+
 │   ├── index.html             # Página de inicio
+
 │   ├── process.html           # Configuración de parámetros de procesamiento
+
 │   ├── results.html           # Visualización de resultados por región
+
 │   ├── upload.html            # Carga de las 5 bandas espectrales
+
 │   └── auth
+
 │       ├── login.html         # Formulario de inicio de sesión
+
 │       └── register.html      # Formulario de registro de usuario
+
 │
 ├── static                     # Archivos estáticos servidos por Flask
+
 │   ├── css
+
 │   │   └── style.css          # Estilos globales de la aplicación
+
 │   └── js
+
 │       ├── crop.js            # Lógica de selección y envío del recorte
+
 │       ├── process.js         # Previsualización dinámica de limpieza (jQuery + AJAX)
+
 │       └── upload.js          # Validación y drag & drop de bandas
 │
 ├── instance
+
 │   └── db.sqlite3             # Base de datos de usuarios ← excluida de Git
+
 │
 ├── uploads                    # Archivos subidos por usuarios ← excluidos de Git
+
 │   └── .gitkeep               # Marcador para que Git registre la carpeta vacía
 │
 └── examples                   # Imágenes satelitales de ejemplo ← excluidas de Git
+
     ├── frontera
+    
     ├── piedras_moras_enero2024
+    
     ├── RioCuarto_Landsat
+    
     ├── RioCuarto_Sentinel
+    
     └── villa_dalcar_enero2017
 
 
