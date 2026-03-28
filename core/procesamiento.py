@@ -101,8 +101,8 @@ def procesar_bandas(bandas_paths, config, session_folder):
     }
 
     if metodo in ['completo', 'comparar']:
-        # USI refina la máscara MNDWI eliminando sombras urbanas;
-        # el filtro de techos quita brillos especulares de superficies artificiales
+        # USI refina la máscara MNDWI eliminando sombras urbanas
+        # el filtro de techos quita brillos de superficies artificiales
         usi, mask_sin_sombras = calcular_usi(
             band_arrays['band_red'],
             band_arrays['band_green'],

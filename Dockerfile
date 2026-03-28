@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y \
     libcairo2 \
     libpango-1.0-0 \
     libpangocairo-1.0-0 \
-    libgdk-pixbuf2.0-0 \
+    libgdk-pixbuf-xlib-2.0-0 \
     libffi-dev \
     shared-mime-info \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -32,6 +32,8 @@ RUN apt-get update && apt-get install -y \
 
 # 5. Instalar Dependencias
 COPY requirements.txt .
+RUN pip install setuptools wheel
+RUN pip install GDAL==$(gdal-config --version)
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 6. Copiar el Código de la Aplicación
@@ -40,5 +42,8 @@ COPY . .
 # 7. Exponer Puerto: Documenta el puerto que usará el servidor Gunicorn
 EXPOSE 8000
 
-# 8. Comando de Inicio 
+# 8. Ajustar permisos
+RUN chmod -R 777 /app
+
+# 9. Comando de Inicio 
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "--timeout", "120", "aquaraster:app"] 

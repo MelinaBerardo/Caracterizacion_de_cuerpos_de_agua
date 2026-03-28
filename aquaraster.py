@@ -28,12 +28,13 @@ from weasyprint import HTML
 
 
 app = Flask(__name__)
+basedir = os.path.abspath(os.path.dirname(__file__))
 app.config.from_mapping(
     SECRET_KEY=os.environ.get('SECRET_KEY', 'dev'),
     UPLOAD_FOLDER=os.path.join(os.getcwd(), 'uploads'),
     ALLOWED_EXTENSIONS={'.tif', '.tiff', '.jp2'},
     # --- Configuración Base de Datos ---
-    SQLALCHEMY_DATABASE_URI='sqlite:///db.sqlite3',
+    SQLALCHEMY_DATABASE_URI='sqlite:///' + os.path.join(basedir, 'db.sqlite3'),
     SQLALCHEMY_TRACK_MODIFICATIONS=False
 )
 

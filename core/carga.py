@@ -7,7 +7,7 @@ import rasterio
 from rasterio.transform import xy
 from pyproj import Geod
 from osgeo import gdal
-from IPython.display import display
+#from IPython.display import display
 
 
 def convertir_a_tiff(input_file, output_file=None):
@@ -115,6 +115,6 @@ def mostrar_info_geodatos(tif_path, mostrar_tabla=True):
             print(f"Área por píxel (m²): {area_pixel_m2:.2f}\n")
             if not df_info.empty:
                 print("Estadísticas por banda:")
-                display(df_info.style.background_gradient(cmap="YlGnBu"))
+                #display(df_info.style.background_gradient(cmap="YlGnBu"))
 
         return df_info, (res_x_m, res_y_m), area_pixel_m2
