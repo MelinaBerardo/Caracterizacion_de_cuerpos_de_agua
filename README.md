@@ -170,8 +170,6 @@ Se han preparado distintos conjuntos de bandas espectrales (por ejemplo: Río Cu
 |---|---|
 | `mndwi` | Índice MNDWI (Green − SWIR). Detección rápida. |
 | `completo` | MNDWI + USI (elimina sombras urbanas) + filtro de techos brillantes. |
-| `comparar` | Ejecuta ambos métodos y muestra la diferencia entre resultados. |
-
 ---
 
 ## Licencia
