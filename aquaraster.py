@@ -34,7 +34,7 @@ app.config.from_mapping(
     UPLOAD_FOLDER=os.path.join(os.getcwd(), 'uploads'),
     ALLOWED_EXTENSIONS={'.tif', '.tiff', '.jp2'},
     # --- Configuración Base de Datos ---
-    SQLALCHEMY_DATABASE_URI='sqlite:///' + os.path.join(basedir, 'db.sqlite3'),
+    SQLALCHEMY_DATABASE_URI='sqlite:///' + os.path.join(basedir, 'instance', 'db.sqlite3'),
     SQLALCHEMY_TRACK_MODIFICATIONS=False
 )
 
@@ -141,15 +141,7 @@ def index():
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
-    session_folder = session.get('session_folder')
-    session_id = str(uuid.uuid4()) 
-    session['upload_id'] = session_id
-
-    if not session_folder:
-        session_folder = get_session_folder()
-        session['session_folder'] = session_folder
-
-    
+    session_folder = get_session_folder() 
     
     band_names = {
         "band_blue": "band_blue",
@@ -323,7 +315,7 @@ def static_file(filename):
 @app.route('/clear_bands')
 def clear_bands():
     # Recuperar ID de la carpeta actual desde la sesión
-    folder_id = session.get('upload_id')
+    folder_id = session.get('session_id')
     
     if folder_id:
         # Construir la ruta completa a la carpeta de esa sesión
@@ -336,15 +328,13 @@ def clear_bands():
                 app.logger.info(f"Limpieza: carpeta {folder_id} eliminada del disco.")
             except OSError as e:
                 app.logger.error(f"Error al borrar la carpeta {folder_id}: {e}")
-        else:
-            app.logger.info(f"Limpieza: carpeta {folder_id} no existía en disco.")
 
     # Limpiar las variables de sesión 
+    session.pop('session_id', None)   
     session.pop('bandas_cargadas', None)
     session.pop('config_procesamiento', None)
     session.pop('resultados_filename', None)
     session.pop('uploaded_files', None)
-    session.pop('upload_id', None) 
 
     flash("Se ha limpiado la carga y eliminado los archivos temporales.", "info")
     return redirect(url_for('upload')) # Redirige de vuelta a la carga
