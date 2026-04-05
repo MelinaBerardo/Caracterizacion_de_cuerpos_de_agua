@@ -7,7 +7,7 @@ services:
       - .env
     volumes:
       # Persiste la base de datos de usuarios entre reinicios del contenedor
-      - ./instance/db.sqlite3:/app/instance/db.sqlite3
+      - ./instance:/app/instance
       # Persiste los archivos procesados subidos por los usuarios
       - ./uploads:/app/uploads
     restart: unless-stopped
