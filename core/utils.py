@@ -302,3 +302,27 @@ def generar_grafico_firma_espectral(reflectancias):
     plt.ion()
 
     return base64.b64encode(buffered.getvalue()).decode()
+
+def generar_imagen_base64_profundidad(profundidad_mapa, mask_region):
+    """
+    Genera una imagen coloreada del mapa de profundidad estimada por píxel.
+    Solo muestra los píxeles dentro de la región de agua.
+    """
+    mapa_visual = np.full_like(profundidad_mapa, np.nan)
+    mapa_visual[mask_region] = profundidad_mapa[mask_region]
+
+    plt.ioff()
+    fig, ax = plt.subplots(figsize=(6, 6))
+
+    im = ax.imshow(mapa_visual, cmap='Blues_r', interpolation='nearest')
+    plt.colorbar(im, ax=ax, label='Profundidad estimada (m)', shrink=0.7)
+    ax.set_title("Mapa de Profundidad Estimada")
+    ax.axis("off")
+    plt.tight_layout()
+
+    buffered = BytesIO()
+    plt.savefig(buffered, format="PNG", dpi=100)
+    plt.close(fig)
+    plt.ion()
+
+    return base64.b64encode(buffered.getvalue()).decode()

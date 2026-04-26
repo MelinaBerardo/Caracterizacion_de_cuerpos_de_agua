@@ -121,6 +121,8 @@ def calcular_profundidad(band_arrays, mask_region):
 
     Retorna un mapa por píxel, la profundidad media y la profundidad máxima.
 
+    Calibrado con: Villa Dalcar (1.33m), San Roque (6.43m), Piedras Moras (8m)
+
     Args:
         band_arrays (dict): Bandas espectrales.
         mask_region (np.ndarray bool): Máscara con True donde hay agua.
@@ -134,23 +136,39 @@ def calcular_profundidad(band_arrays, mask_region):
     # Evitar ceros en el logaritmo
     blue_norm = np.clip(blue_norm, 1e-6, 1)
 
-    # Modelo empírico píxel a píxel: D = 0.544 - 1.841 * ln(R_blue)
-    profundidad = 0.544 - 1.841 * np.log(blue_norm)
-
-    profundidad_mapa = np.full_like(profundidad, np.nan)
-    profundidad_mapa[mask_region] = profundidad[mask_region]
-
     # Profundidad media estimada sobre el valor promedio de reflectancia azul
     blue_mean = np.nanmean(normalize(band_arrays['band_blue'][mask_region].astype(float)))
-    profundidad_media = 0.6381 - 2.9948 * np.log(blue_mean)
+    blue_mean = max(blue_mean, 1e-6)  
+    print(blue_mean)
+    profundidad_media = 0.7469- 2.9240  * np.log(blue_mean)
 
     # Profundidad máxima estimada a partir del píxel de menor reflectancia
     # (menor reflectancia = mayor profundidad)
     EPSILON = 1e-6
     blue_min = np.nanmin(band_arrays['band_blue'][mask_region].astype(float))
     blue_min = max(blue_min, EPSILON)
-    profundidad_max = (-1 / 0.0453) * np.log(blue_min / 939.89)
+    profundidad_max_raw = 0.7469- 2.9240  * np.log(blue_min)
 
+    # Mapa píxel a píxel — se calcula con el mismo modelo pero se reescala
+    # para que la media del mapa coincida con profundidad_media
+    profundidad_raw = np.full_like(blue_norm, np.nan)
+    profundidad_raw[mask_region] = 0.7469- 2.9240 * np.log(blue_norm[mask_region])
+
+    media_raw = np.nanmean(profundidad_raw[mask_region])
+
+    # Factor de escala: ajusta el mapa para que su media sea consistente
+    # con el valor calibrado
+    if media_raw != 0:
+        factor = profundidad_media / media_raw
+    else:
+        factor = 1.0
+
+    profundidad_mapa = np.full_like(blue_norm, np.nan)
+    profundidad_mapa[mask_region] = profundidad_raw[mask_region] * factor
+
+    # Profundidad máxima reescalada con el mismo factor
+    profundidad_max = profundidad_max_raw * factor
+    
     return profundidad_mapa, profundidad_media, profundidad_max
 
 

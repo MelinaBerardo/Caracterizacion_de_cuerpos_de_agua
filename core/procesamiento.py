@@ -24,7 +24,8 @@ from core.utils import (
     generar_imagen_base64_con_ids,
     generar_imagen_rgb_con_bordes,
     generar_imagen_contexto_global,
-    generar_grafico_firma_espectral
+    generar_grafico_firma_espectral,
+    generar_imagen_base64_profundidad
 )
 
 def _calcular_geometria_pixel_robusta(path_raster):
@@ -285,6 +286,7 @@ def analizar_regiones_web(mask_limpia, labels, props, band_arrays, band_transfor
 
         # Profundidad estimada a partir de la reflectancia azul (modelo empírico)
         mapa_profu, profundidad_media, profundidad_max = calcular_profundidad(band_arrays, mask_region)
+        imagen_profundidad_base64 = generar_imagen_base64_profundidad(mapa_profu, mask_region)
 
         # Morfología vía esqueletización: clasifica entre Río, Lago, Laguna o Embalse
         res_esqueleto = analizar_esqueleto(
@@ -325,6 +327,7 @@ def analizar_regiones_web(mask_limpia, labels, props, band_arrays, band_transfor
             'grafico_espectral': grafico_espectral_b64,
             'imagen_base64': imagen_region_base64,
             'imagen_contexto_base64': imagen_contexto_base64,
+            'imagen_profundidad': imagen_profundidad_base64,
             'google_maps': f"https://www.google.com/maps/@{lat},{lon},18z"
         }
 

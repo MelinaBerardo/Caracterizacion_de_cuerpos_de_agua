@@ -154,7 +154,7 @@ Una vez levantada la aplicación, el flujo es:
 5. **Previsualizar** el resultado antes de procesar.
 6. **Ejecutar** el procesamiento completo.
 7. **Explorar** los resultados por región detectada: área, perímetro, turbidez, profundidad estimada, morfología y coordenadas geográficas.
-8. **Exportar** en CSV o PDF.
+8. **Exportar** en PDF.
 
 ### Datos de Ejemplo (Imágenes Satelitales)
 

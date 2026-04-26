@@ -68,6 +68,14 @@
                     {% else %}
                     <p>No se pudo generar la imagen para esta región.</p>
                     {% endif %}
+                    <h4 style="text-align: center; margin-bottom: 5px;">Mapa de Profundidad Estimada</h4>
+                    {% if region.imagen_profundidad %}
+                    <img src="data:image/png;base64,{{ region.imagen_profundidad }}" 
+                        alt="Mapa de profundidad">
+                    {% else %}
+                    <p style="color: #999;">Mapa de profundidad no disponible.</p>
+                    {% endif %}
+
                 </div>
 
                 <div class="region-report">
