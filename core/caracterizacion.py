@@ -216,7 +216,23 @@ def clasificar_turbidez(ndti_mean):
     Estima la profundidad de disco de Secchi (SD) a partir del NDTI
     y clasifica el estado trófico del cuerpo de agua.
 
-    La fórmula sigmoidal de SD está calibrada empíricamente.
+    Modelo logarítmico calibrado con tres cuerpos de agua de referencia
+    mediante ajuste por mínimos cuadrados:
+
+        SD = 2.0826 · ln(|NDTI|) + 7.8944
+
+    Calibrado con:
+        Piedras Moras → NDTI: -0.2603 | SD: 5.10 m (Oligotrófico)
+        San Roque     → NDTI: -0.0414 | SD: 1.20 m (Hipereutrófico)
+        Villa Dalcar  → NDTI: -0.0308 | SD: 0.70 m (Hipereutrófico)
+
+    R² = 0.9994 | RMSE = 0.048 m
+
+    Umbrales tróficos estándar:
+        SD > 5.0 m  → Oligotrófico
+        SD 2.0–5.0  → Mesotrófico
+        SD 1.0–2.0  → Eutrófico
+        SD < 1.0 m  → Hipereutrófico
 
     Args:
         ndti_mean (float): Valor medio de NDTI de la región.
@@ -224,23 +240,28 @@ def clasificar_turbidez(ndti_mean):
     Returns:
         tuple: (sd_estimada en metros, clasificacion trófica como str)
     """
+    # Coeficientes calibrados por mínimos cuadrados
+    A = 2.0826
+    B = 7.8944
+
     if np.isfinite(ndti_mean) and ndti_mean != 0:
-        # Modelo sigmoidal: mayor |NDTI| → mayor transparencia → mayor SD
-        sd_estimada = 5.0978 / (1 + np.exp(-36.4276 * (np.abs(ndti_mean) - 0.0767)))
+        # Modelo logarítmico: mayor |NDTI| → mayor transparencia → mayor SD
+        sd_estimada = A * np.log(np.abs(ndti_mean)) + B
+        # SD no puede ser negativa (fuera del rango de calibración)
+        sd_estimada = max(sd_estimada, 0.0)
     else:
         sd_estimada = np.nan
 
+    # Clasificación trófica según umbrales estándar
     if not np.isfinite(sd_estimada):
-        clasificacion = "sin datos"
-    elif sd_estimada > 5:
+        clasificacion = "Sin datos"
+    elif sd_estimada > 5.0:
         clasificacion = "Oligotrófico"
-    elif 2 <= sd_estimada <= 5:
+    elif sd_estimada >= 2.0:
         clasificacion = "Mesotrófico"
-    elif 1 <= sd_estimada < 2:
+    elif sd_estimada >= 1.0:
         clasificacion = "Eutrófico"
-    elif sd_estimada < 1:
-        clasificacion = "Hipereutrófico"
     else:
-        clasificacion = "sin datos"
+        clasificacion = "Hipereutrófico"
 
     return sd_estimada, clasificacion
