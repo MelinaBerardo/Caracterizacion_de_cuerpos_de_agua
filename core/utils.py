@@ -306,7 +306,7 @@ def generar_grafico_firma_espectral(reflectancias):
 def generar_imagen_base64_profundidad(profundidad_mapa, mask_region):
     """
     Genera una imagen coloreada del mapa de profundidad estimada por píxel.
-    Solo muestra los píxeles dentro de la región de agua.
+    Solo muestra los píxeles dentro de la región de agua, sin escala numérica.
     """
     mapa_visual = np.full_like(profundidad_mapa, np.nan)
     mapa_visual[mask_region] = profundidad_mapa[mask_region]
@@ -315,10 +315,25 @@ def generar_imagen_base64_profundidad(profundidad_mapa, mask_region):
     fig, ax = plt.subplots(figsize=(6, 6))
 
     im = ax.imshow(mapa_visual, cmap='Blues_r', interpolation='nearest')
-    plt.colorbar(im, ax=ax, label='Profundidad estimada (m)', shrink=0.7)
-    ax.set_title("Mapa de Profundidad Estimada")
+
+    cbar = plt.colorbar(im, ax=ax, shrink=0.7)
+    cbar.set_ticks([])
+    cbar.outline.set_linewidth(0.5)
+
+    # Etiquetas arriba y abajo de la barra indicando el significado del color
+    cbar.ax.text(0.5, 1.02, 'Menor\nprofundidad',
+                 transform=cbar.ax.transAxes,
+                 ha='center', va='bottom',
+                 fontsize=7, color='#555555', style='italic')
+    cbar.ax.text(0.5, -0.02, 'Mayor\nprofundidad',
+                 transform=cbar.ax.transAxes,
+                 ha='center', va='top',
+                 fontsize=7, color='#555555', style='italic')
+
+    ax.set_title("Mapa de Profundidad Estimada", fontsize=11, pad=10)
     ax.axis("off")
-    plt.tight_layout()
+
+    plt.tight_layout(rect=[0, 0.06, 1, 1])
 
     buffered = BytesIO()
     plt.savefig(buffered, format="PNG", dpi=100)
